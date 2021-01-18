@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import jogotabuleiro.TabuleiroExcecao;
 import xadrez.Cor;
+import xadrez.PartidaDeXadrez;
 import xadrez.PecaDoXadrez;
 import xadrez.PosicaoXadrez;
 
@@ -49,6 +50,13 @@ public class InterfaceUsuario {
 		}		
 	}
 	
+	public static void imprimePartida(PartidaDeXadrez partidaXadrez) {
+		imprimeTabuleiro(partidaXadrez.getPecas());
+		System.out.println();
+		System.out.println("Turno: " + partidaXadrez.getTurno());
+		System.out.println("Aguardando o jogador: " + partidaXadrez.getJogadorAtual());
+	}
+	
 	public static void imprimeTabuleiro(PecaDoXadrez[][] pecas) {
 		
 		for (int i=0; i<pecas.length; i++) {			
@@ -83,7 +91,7 @@ public class InterfaceUsuario {
             System.out.print("-" + ANSI_RESET);
         }
         else {
-            if (peca.getCor() == Cor.BRANCA) {
+            if (peca.getCor() == Cor.BRANCO) {
                 System.out.print(ANSI_WHITE + peca + ANSI_RESET);
             }
             else {
