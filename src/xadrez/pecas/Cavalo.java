@@ -13,7 +13,7 @@ public class Cavalo extends PecaDoXadrez{
 
 	@Override
 	public String toString() {
-		return "C";
+		return "N";
 	}
 
 	private boolean podeMover(Posicao posicao) {		

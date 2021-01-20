@@ -87,12 +87,12 @@ public class PartidaDeXadrez {
 		} else {
 			proximoTurno();
 		}
-		
+
 		return (PecaDoXadrez) pecaCapturada;
 	}
 
 	private Peca movimentar(Posicao origem, Posicao destino) {
-		PecaDoXadrez p = (PecaDoXadrez)tabuleiro.removerPeca(origem);
+		PecaDoXadrez p = (PecaDoXadrez) tabuleiro.removerPeca(origem);
 		p.incrementarQtdMovimentos();
 		Peca pecaCapturada = tabuleiro.removerPeca(destino);
 		tabuleiro.posicionarPeca(p, destino);
@@ -101,11 +101,30 @@ public class PartidaDeXadrez {
 			pecasNoTabuleiro.remove(pecaCapturada);
 			pecasCapturadas.add(pecaCapturada);
 		}
+
+		// #movimento especial lançando torre do lado do rei (roque pequeno)
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() + 2) {
+			Posicao origemTorre = new Posicao(origem.getLinha(), origem.getColuna() + 3);
+			Posicao destinoTorre = new Posicao(origem.getLinha(), origem.getColuna() + 1);
+			PecaDoXadrez torre = (PecaDoXadrez) tabuleiro.removerPeca(origemTorre);
+			tabuleiro.posicionarPeca(torre, destinoTorre);
+			torre.incrementarQtdMovimentos();
+		}
+
+		// #movimento especial lançando torre do lado do rainha (roque grande)
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() - 2) {
+			Posicao origemTorre = new Posicao(origem.getLinha(), origem.getColuna() - 4);
+			Posicao destinoTorre = new Posicao(origem.getLinha(), origem.getColuna() - 1);
+			PecaDoXadrez torre = (PecaDoXadrez) tabuleiro.removerPeca(origemTorre);
+			tabuleiro.posicionarPeca(torre, destinoTorre);
+			torre.incrementarQtdMovimentos();
+		}
+
 		return pecaCapturada;
 	}
 
 	private void desfazerMovimento(Posicao origem, Posicao destino, Peca pecaCapturada) {
-		PecaDoXadrez p = (PecaDoXadrez)tabuleiro.removerPeca(destino);
+		PecaDoXadrez p = (PecaDoXadrez) tabuleiro.removerPeca(destino);
 		p.decrementarQtdMovimentos();
 		tabuleiro.posicionarPeca(p, origem);
 
@@ -113,6 +132,24 @@ public class PartidaDeXadrez {
 			tabuleiro.posicionarPeca(pecaCapturada, destino);
 			pecasCapturadas.remove(pecaCapturada);
 			pecasNoTabuleiro.add(pecaCapturada);
+		}
+
+		// #movimento especial lançando torre do lado do rei (roque pequeno)
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() + 2) {
+			Posicao origemTorre = new Posicao(origem.getLinha(), origem.getColuna() + 3);
+			Posicao destinoTorre = new Posicao(origem.getLinha(), origem.getColuna() + 1);
+			PecaDoXadrez torre = (PecaDoXadrez) tabuleiro.removerPeca(destinoTorre);
+			tabuleiro.posicionarPeca(torre, origemTorre);
+			torre.decrementarQtdMovimentos();
+		}
+
+		// #movimento especial lançando torre do lado do rainha (roque grande)
+		if (p instanceof Rei && destino.getColuna() == origem.getColuna() - 2) {
+			Posicao origemTorre = new Posicao(origem.getLinha(), origem.getColuna() - 4);
+			Posicao destinoTorre = new Posicao(origem.getLinha(), origem.getColuna() - 1);
+			PecaDoXadrez torre = (PecaDoXadrez) tabuleiro.removerPeca(destinoTorre);
+			tabuleiro.posicionarPeca(torre, origemTorre);
+			torre.decrementarQtdMovimentos();
 		}
 	}
 
@@ -179,8 +216,8 @@ public class PartidaDeXadrez {
 				.collect(Collectors.toList());
 		for (Peca p : list) {
 			boolean[][] mat = p.movimentosPossiveis();
-			for (int i = 0; i<tabuleiro.getLinhas(); i++) {
-				for (int j = 0; j<tabuleiro.getColunas(); j++) {
+			for (int i = 0; i < tabuleiro.getLinhas(); i++) {
+				for (int j = 0; j < tabuleiro.getColunas(); j++) {
 					if (mat[i][j]) {
 						Posicao origem = ((PecaDoXadrez) p).getPosicaoXadrez().posicionarCoordenadaXadrez();
 						Posicao destino = new Posicao(i, j);
@@ -208,7 +245,7 @@ public class PartidaDeXadrez {
 		posicionarNovaPeca('b', 1, new Cavalo(tabuleiro, Cor.BRANCO));
 		posicionarNovaPeca('c', 1, new Bispo(tabuleiro, Cor.BRANCO));
 		posicionarNovaPeca('d', 1, new Rainha(tabuleiro, Cor.BRANCO));
-		posicionarNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO));
+		posicionarNovaPeca('e', 1, new Rei(tabuleiro, Cor.BRANCO, this));
 		posicionarNovaPeca('f', 1, new Bispo(tabuleiro, Cor.BRANCO));
 		posicionarNovaPeca('g', 1, new Cavalo(tabuleiro, Cor.BRANCO));
 		posicionarNovaPeca('h', 1, new Torre(tabuleiro, Cor.BRANCO));
@@ -225,7 +262,7 @@ public class PartidaDeXadrez {
 		posicionarNovaPeca('b', 8, new Cavalo(tabuleiro, Cor.PRETO));
 		posicionarNovaPeca('c', 8, new Bispo(tabuleiro, Cor.PRETO));
 		posicionarNovaPeca('d', 8, new Rainha(tabuleiro, Cor.PRETO));
-		posicionarNovaPeca('e', 8, new Rei(tabuleiro, Cor.PRETO));
+		posicionarNovaPeca('e', 8, new Rei(tabuleiro, Cor.PRETO, this));
 		posicionarNovaPeca('f', 8, new Bispo(tabuleiro, Cor.PRETO));
 		posicionarNovaPeca('g', 8, new Cavalo(tabuleiro, Cor.PRETO));
 		posicionarNovaPeca('h', 8, new Torre(tabuleiro, Cor.PRETO));
