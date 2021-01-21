@@ -42,7 +42,11 @@ public class Programa {
 				
 				if (partidaDeXadrez.getPromovido() != null) {
 					System.out.print("Digite uma peça para promoção (B/N/R/Q): ");
-					String tipo = sc.nextLine();
+					String tipo = sc.nextLine().toUpperCase();
+					while (!tipo.equals("B") && !tipo.equals("N") && !tipo.equals("R") && !tipo.equals("Q")) {
+						System.out.print("Valor inválido! Digite uma peça para promoção (B/N/R/Q): ");
+						tipo = sc.nextLine().toUpperCase();
+					}
 					partidaDeXadrez.substituirPecaPromovida(tipo);
 				}
 			}
